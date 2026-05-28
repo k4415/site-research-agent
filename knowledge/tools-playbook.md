@@ -2,6 +2,34 @@
 
 リサーチツールの使い分け。
 
+## 自動トリガー条件（research-plan が判断するルール）
+
+各ツールはこの条件で自動起動される。手動指示なしで `research-plan` skill が分岐する:
+
+| 条件 | 起動するツール | 担当 skill |
+|---|---|---|
+| `research_needs.competitors[].url` がある | `scripts/extract_lp_schema.py`（Firecrawl JSON mode） | `competitor-scrape` |
+| `research_needs.competitors[].discover: true` | `scripts/query_perplexity.py` で発見 → `extract_lp_schema.py` | `competitor-scrape` |
+| `research_needs.market_intelligence[]` にエントリ | `scripts/query_perplexity.py`（必須） + `scripts/query_estat.py`（日本国内案件） | `market-research` |
+| `research_needs.market_intelligence[].preferred_sources` に URL が含まれる | `scripts/fetch_lp.py` でその URL も取得 | `market-research` |
+| `research_needs.voc[].media: x` | `aachat session run x-research-expert`（AUTH_TOKEN + CT0 + X_BEARER_TOKEN） | `voc-research` |
+| `research_needs.voc[].media: client_voc_url` | `scripts/fetch_lp.py` でレビューページ取得 | `voc-research` |
+| `research_needs.client_assets[].deep_scan: true` | `scripts/fetch_lp.py` (auto = Jina → Firecrawl fallback) | `client-asset-parse` |
+| `pre_shared_assets[].type == existing_website` で deep_scan 未指定 | デフォルト deep_scan: true として扱う | `client-asset-parse` |
+
+すべての URL は **常に Jina Reader を先に試し、失敗 or 不十分な場合のみ Firecrawl にフォールバック**（コスト最適化）。
+
+### env 要件
+
+- `FIRECRAWL_API_KEY`: `competitor-scrape` / `client-asset-parse` の fallback に必要
+- `PERPLEXITY_API_KEY`: `market-research` / `competitor-scrape`（discover）に必要
+- `ESTAT_APP_ID`: 日本国内 `market-research` に推奨（無料）
+- `JINA_API_KEY`: 任意（無料枠 20 req/分で多くの場合足りる）
+- `AUTH_TOKEN` + `CT0`: x-research-expert の bird CLI 認証に必要
+- `X_BEARER_TOKEN`: x-research-expert の X API v2 fallback に必要
+
+env がない場合、該当 skill は fail-fast し `failed_fetches` に記録、orchestrator にエスカレーション。
+
 ## LP 取得
 
 ### 一次選択: Jina Reader
