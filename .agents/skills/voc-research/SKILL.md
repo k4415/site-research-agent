@@ -27,7 +27,7 @@ research-plan の W3 ワークストリーム。X 上の VOC を既存 `x-resear
 3. **x-research-expert を起動**
    `knowledge/x-research-handoff.md` のテンプレに従う：
    ```bash
-   aachat session run x-research-expert --project <project> --via claude-code "
+   aachat session run x-research-expert.<owner> --project <project> "
    目的: <case-id> の業界 VOC を X 上で調査
 
    対象:

@@ -18,7 +18,7 @@
 通常は `site-strategy-orchestrator` から起動される。
 
 ```bash
-aachat session run site-research-agent --project <project> --via claude-code "
+aachat session run site-research-agent.<owner> --project <project> "
 要件定義に従ってリサーチを実行。
 context:
 - 案件ハブ: [[aachat/docs/<team>/<project>/cases/<case-id>.md]]

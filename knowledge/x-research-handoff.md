@@ -15,7 +15,7 @@ aachat session list --project <project> --agent x-research-expert
 ## 依頼テンプレ
 
 ```bash
-aachat session run x-research-expert --project <project> --via claude-code "
+aachat session run x-research-expert.<owner> --project <project> "
 目的: <case-id> の業界 VOC を X 上で調査
 
 対象:
