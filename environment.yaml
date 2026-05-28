@@ -1,0 +1,23 @@
+name: site-research-agent
+description: "Research agent for site creation: competitors, market, VOC (via x-research-expert), client assets"
+config:
+  packages:
+    pip:
+      - requests
+      - python-dateutil
+      - beautifulsoup4
+      - readability-lxml
+      - lxml
+      - pyyaml
+    npm: []
+  networking:
+    type: unrestricted
+  env:
+    - name: FIRECRAWL_API_KEY
+      purpose: Firecrawl /scrape and /extract endpoints for LP structured extraction
+    - name: PERPLEXITY_API_KEY
+      purpose: Perplexity Sonar API for search-grounded market intelligence
+    - name: ESTAT_APP_ID
+      purpose: e-Stat (Japan government statistics) API access
+    - name: JINA_API_KEY
+      purpose: Jina Reader paid tier (optional; free tier 20 req/min works without)
